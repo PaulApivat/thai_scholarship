@@ -26,3 +26,10 @@ df2 <- add_column(df2, purpose_total = NA, .after = "purpose_other")
 df3 <- df2
 df3[,3:16] <- sapply(df3[,3:16],as.numeric)
 
+# now add purpose_study, purpose_training and purpose_other to equal “purpose_total” (remove NA)
+df3$purpose_total <- rowSums(df3[,c("purpose_study", "purpose_training", "purpose_other")], na.rm = TRUE)
+
+# add rows from KING - IPST to equal “granted” column (remove NA)
+df3$granted <- rowSums(df3[,c("KING", "CSC", "MFA", "MOST", "MOPH", "HEC", "ODOS", "IPST")], na.rm = TRUE)
+
+
