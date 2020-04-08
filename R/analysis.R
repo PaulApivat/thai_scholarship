@@ -9,6 +9,8 @@ library(tibble)
 library(treemap)
 library(ggridges)
 library(RColorBrewer)
+library(ggthemes)
+library(countrycode)
 
 # loading data
 df <- read.csv("/Users/paulapivat/Desktop/data_go_th/thai_scholarship.csv")
@@ -83,5 +85,49 @@ tree <- treemap(df2c,
 ### Barchart
 ## Number of Scholarships granted by Type of Scholar (filled with ‘purpose’)
 
+# change scholarship_provider from character to factor
+df2c_factor <- df2c
+df2c_factor$scholarship_provider <- as.factor(df2c_factor$scholarship_provider)
+
+# re-order factor
+df2c_factor$scholarship_provider <- factor(df2c_factor$scholarship_provider, levels = c("MOST", "ODOS", "CSC", "IPST", "HEC", "KING", "MOPH", "MFA"))
+
+# plot - bar_purpose
+library(ggthemes)
+
+bar_purpose <- ggplot(data = df2c_factor, mapping = aes(x = scholarship_provider, y = number_recipient, fill = purpose)) 
++ geom_bar(stat = "identity") 
++ scale_fill_manual(values = c("#A51931", "#F4F5F8", "#2D2A4A"), name = "The Purpose", guide = guide_legend(reverse = TRUE), labels = c("Other", "Study", "Training")) 
++ theme_economist() 
++ labs(x = "Scholarship Provider", y = "Number of Scholarship Recipient", fill = "Purpose", title = "Number of Scholarships granted by Type") 
++ theme(legend.position = "bottom")
+
+# create region / continent
+df2c_factor[,"region"] <- NA
+colnames(df2c_factor)[7] <- "continent"
+
+
+# use countrycode package to derive continent from country name
+library(countrycode)
+
+df2c_factor$continent <- countrycode(sourcevar = df2c_factor[,"countries"], origin = "country.name", destination = "continent")
+
+# Tried to change the spelling of Netherland(s)
+df2c_factor$countries[df2c_factor$countries == "NETHERLAND"] <- "NETHERLANDS"
+# but first had to change from factor to character
+df2c_factor$countries <- as.character(df2c_factor$countries)
+# then back as factor
+df2c_factor$countries <- as.factor(df2c_factor$countries)
+# Then re-run countrycode package (correctly classifying Netherlands as Europe)
+df2c_factor$continent <- countrycode(sourcevar = df2c_factor[,"countries"], origin = "country.name", destination = "continent")
+
+# plot - bar_country
+bar_country <- ggplot(data = df2c_factor, mapping = aes(x = scholarship_provider, y = number_recipient, fill = continent)) 
++ geom_bar(stat = "identity") 
++ coord_flip() 
++ labs(x = "Scholarship Provider", y = "Number of Scholarship Recipients", fill = "Continent", title = "Number of Scholarships by Continent") 
++ scale_fill_manual(values = c("#ca0020", "#f4a582", "#ffffbf", "#92c5de", "#0571b0")) 
++ theme_economist() 
++ theme(legend.position = "bottom")
 
 
