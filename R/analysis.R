@@ -152,5 +152,15 @@ circle_bar <- ggplot(data = df2d, aes(x=countries, y=number_recipient, fill=scho
 + theme_minimal() 
 + coord_polar(start = 0)
 
+### Ridgeline Plot
+library(ggridges)
+
+# plot
+ridgeline_plot <- ggplot(df2d, aes(x = number_recipient, y = scholarship_provider, fill = scholarship_provider)) 
++ geom_density_ridges() 
++ theme_ridges() 
++ theme(legend.position = "none") 
++ labs(x = "Number of Scholarship Recipients", y = "Scholarship Providers", title = "Distribution of Scholarship Recipients by Type")
+
 
 
