@@ -130,4 +130,27 @@ bar_country <- ggplot(data = df2c_factor, mapping = aes(x = scholarship_provider
 + theme_economist() 
 + theme(legend.position = "bottom")
 
+### Circular Bar Plot (basic)
+## Note: Need to delete every 2nd and 3rd row from df2c_factor 
+## to create circular bar plot with only "unique observations"
+## NOT multiplied by three because 'purpose' included (e.g., see df2c_factor id)
+## IMPORTANT NOTE: ylim() is importatn for circular bar plot because scale is off if not applied correctly
+
+
+# every 3rd row
+df2c_factor %>%
+    filter(row_number() %% 3 != 1) -> df2d
+
+# delete every EVEN row (every 2nd row)
+df2d %>%
+    filter(row_number() %% 2 != 0) -> df2d
+
+# plot
+circle_bar <- ggplot(data = df2d, aes(x=countries, y=number_recipient, fill=scholarship_provider)) 
++ geom_bar(stat = "identity", fill = alpha("blue", 0.3)) 
++ ylim(-100, 1100) 
++ theme_minimal() 
++ coord_polar(start = 0)
+
+
 
