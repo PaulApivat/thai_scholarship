@@ -12,6 +12,9 @@ library(RColorBrewer)
 library(ggthemes)
 library(countrycode)
 
+# All data frames created
+df, df2, df3, df2a, df2c, df2c_factor, df2d, df2b 
+
 # loading data
 df <- read.csv("/Users/paulapivat/Desktop/data_go_th/thai_scholarship.csv")
 
